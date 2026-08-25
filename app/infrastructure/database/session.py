@@ -18,7 +18,7 @@ from sqlalchemy.ext.asyncio import (
 # 默认异步 PostgreSQL（需安装 asyncpg）
 _default_url = "postgresql+asyncpg://postgres:postgres@localhost:5432/agent_db"
 
-
+# 数据库 URL 归一化
 def normalize_async_database_url(url: str) -> str:
     """将同步驱动 URL 转为 SQLAlchemy 异步 URL。"""
     if "+asyncpg" in url:
@@ -32,7 +32,7 @@ def normalize_async_database_url(url: str) -> str:
     )
     return u
 
-
+# 数据库引擎初始化
 def init_engine(database_url: str | None = None, **engine_kwargs: Any) -> AsyncEngine:
     """创建异步引擎（应用启动时调用一次）。"""
     url = normalize_async_database_url(database_url or _default_url)
@@ -46,7 +46,7 @@ def init_engine(database_url: str | None = None, **engine_kwargs: Any) -> AsyncE
 _engine: AsyncEngine | None = None
 async_session_factory: async_sessionmaker[AsyncSession] | None = None
 
-
+# 数据库会话工厂配置
 def configure_session(engine: AsyncEngine) -> async_sessionmaker[AsyncSession]:
     """绑定全局 session 工厂。"""
     global _engine, async_session_factory
@@ -58,7 +58,7 @@ def configure_session(engine: AsyncEngine) -> async_sessionmaker[AsyncSession]:
     )
     return async_session_factory
 
-
+# 数据库会话获取
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
     """依赖注入用：获取异步会话（由路由层负责 commit）。"""
     if async_session_factory is None:

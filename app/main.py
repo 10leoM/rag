@@ -10,7 +10,7 @@ from app.api.routes import chat, document, health
 from app.config import get_settings
 from app.infrastructure.database.session import configure_session, init_engine
 
-
+#应用生命周期管理
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     settings = get_settings()
@@ -22,7 +22,7 @@ async def lifespan(app: FastAPI):
     await engine.dispose()
     logger.info("关闭 {}", settings.app_name)
 
-
+#应用创建
 def create_app() -> FastAPI:
     settings = get_settings()
     application = FastAPI(

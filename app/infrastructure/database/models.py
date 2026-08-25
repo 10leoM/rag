@@ -11,15 +11,15 @@ from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, JSON
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-
+# 生成 UUID
 def _uuid() -> str:
     return str(uuid.uuid4())
 
-
+# 数据库模型基类
 class Base(DeclarativeBase):
     """声明式基类。"""
 
-
+# 会话模型，用于存储用户对话线程的信息
 class Conversation(Base):
     """会话表：一次用户对话线程。"""
 
@@ -48,7 +48,7 @@ class Conversation(Base):
         cascade="all, delete-orphan",
     )
 
-
+# 消息模型，用于存储会话中的消息，包括用户和助手的消息
 class Message(Base):
     """消息表：会话中的单条消息。"""
 
@@ -75,7 +75,7 @@ class Message(Base):
 
     conversation: Mapped["Conversation"] = relationship(back_populates="messages")
 
-
+# 文档模型，用于存储上传的原始文档元数据
 class Document(Base):
     """文档表：上传的原始文档元数据。"""
 
@@ -101,7 +101,7 @@ class Document(Base):
         cascade="all, delete-orphan",
     )
 
-
+# 文档分块模型，用于存储文档的文本块，用于 RAG 搜索
 class DocumentChunk(Base):
     """文档分块表：用于 RAG 的文本块。"""
 
@@ -128,7 +128,7 @@ class DocumentChunk(Base):
 
     document: Mapped["Document"] = relationship(back_populates="chunks")
 
-
+# 追踪日志模型，用于持久化关键 Span（可与内存 Tracer 配合）
 class TraceLog(Base):
     """追踪日志表：持久化关键 Span（可与内存 Tracer 配合）。"""
 

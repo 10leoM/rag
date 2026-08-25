@@ -128,3 +128,18 @@ Invoke-RestMethod -Uri http://127.0.0.1:8000/api/v1/chat -Method Post -Body $bod
 | app/core/ | Agent 编排、RAG、记忆、意图、工具 |
 | app/etl/ | 文档解析与分块 |
 | app/api/routes/ | 对话、文档、健康检查路由 |
+## 完整运行命令（无注释）
+
+```powershell
+cd D:\code\ai-agent\project-python
+
+.\.venv\Scripts\Activate.ps1 // 每次运行前激活
+python.exe -m venv .venv // 一次性
+python.exe -m pip install -r requirements-core.txt // 一次性
+python.exe -m pip install -e . // 一次性
+Copy-Item .env.example .env // 一次性
+python.exe -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 // 每次运行
+
+docker compose up -d --build // 构建全套容器+容器化 app
+docker compose start app     // 启动 app 容器
+```
