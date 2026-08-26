@@ -16,7 +16,7 @@ class Reranker:
 
     def __init__(
         self,
-        model_name: str = "cross-encoder/ms-marco-MiniLM-L-6-v2",
+        model_name: str = "BAAI/bge-reranker-base",
         device: str | None = None,
     ) -> None:
         """
@@ -28,7 +28,7 @@ class Reranker:
         self._model: Any = None
 
     def _load_model(self) -> Any:
-        """懒加载 CrossEncoder。"""
+        """懒加载 CrossEncoder，优先离线缓存。"""
         if self._model is not None:
             return self._model
         try:
@@ -38,7 +38,32 @@ class Reranker:
         kwargs: dict[str, Any] = {}
         if self._device:
             kwargs["device"] = self._device
-        self._model = CrossEncoder(self._model_name, **kwargs)
+        # 1. 优先离线加载，缓存命中时无需联网
+        try:
+            self._model = CrossEncoder(
+                self._model_name,
+                local_files_only=True,
+                **kwargs,
+            )
+            logger.info(
+                "reranker.py::_load_model 离线加载完成 model={}",
+                self._model_name,
+            )
+        except Exception as offline_err:
+            # 2. 缓存不存在时回退联网下载
+            logger.warning(
+                "reranker.py::_load_model 离线加载失败，回退联网: {}",
+                offline_err,
+            )
+            self._model = CrossEncoder(
+                self._model_name,
+                local_files_only=False,
+                **kwargs,
+            )
+            logger.info(
+                "reranker.py::_load_model 联网加载完成 model={}",
+                self._model_name,
+            )
         return self._model
 
     async def rerank(

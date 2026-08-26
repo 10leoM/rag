@@ -47,3 +47,14 @@ docker compose up -d milvus
 ```
 
 期望输出：`1 passed`（伴随 PyMilvusDeprecationWarning，属预期，不影响验收）。
+
+### M1-F5 · 重排 + 生成接线
+
+```powershell
+# 前置：Docker Desktop 已启动，Milvus 容器运行中
+docker compose up -d milvus
+# 在项目根目录执行，首次运行会下载 bge-reranker-base 模型
+.venv\Scripts\python.exe -m pytest tests/services/test_rag_generation.py -v
+```
+
+期望输出：`2 passed`（伴随 PyMilvusDeprecationWarning，属预期，不影响验收）。
