@@ -42,6 +42,16 @@ class Settings(BaseSettings):
         description="默认向量集合名",
     )
 
+    embedding_model_name: str = Field(
+        default="BAAI/bge-small-zh-v1.5",
+        description="本地 embedding 模型名（sentence-transformers）",
+    )
+    embedding_dim: int = Field(default=512, description="embedding 向量维度")
+    embedding_device: str | None = Field(
+        default=None,
+        description="embedding 推理设备（cpu/cuda/mps），None 表示自动",
+    )
+
     log_level: str = Field(default="INFO", description="日志级别")
 
 
