@@ -37,7 +37,7 @@ class LocalEmbedder:
         self._dim_warned = False
 
     def _load_model(self) -> Any:
-        """按需加载模型，避免应用启动时阻塞。"""
+        """按需加载模型，优先离线缓存，避免应用启动时阻塞。"""
         if self._model is not None:
             return self._model
 
@@ -52,9 +52,32 @@ class LocalEmbedder:
         kwargs: dict[str, Any] = {}
         if self.device:
             kwargs["device"] = self.device
-        # 2. 构造模型
-        self._model = SentenceTransformer(self.model_name, **kwargs)
-        logger.info("embedder.py::_load_model 模型加载完成 model={}", self.model_name)
+        # 2. 优先离线加载，缓存已存在时无需联网
+        try:
+            self._model = SentenceTransformer(
+                self.model_name,
+                local_files_only=True,
+                **kwargs,
+            )
+            logger.info(
+                "embedder.py::_load_model 离线加载完成 model={}",
+                self.model_name,
+            )
+        except Exception as offline_err:
+            # 3. 缓存不存在时回退联网下载
+            logger.warning(
+                "embedder.py::_load_model 离线加载失败，回退联网: {}",
+                offline_err,
+            )
+            self._model = SentenceTransformer(
+                self.model_name,
+                local_files_only=False,
+                **kwargs,
+            )
+            logger.info(
+                "embedder.py::_load_model 联网加载完成 model={}",
+                self.model_name,
+            )
         return self._model
 
     def _encode(self, texts: Sequence[str]) -> list[np.ndarray]:

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""pytest 共享夹具：session 级加载一次模型，避免测试间重复下载与加载。"""
+"""F1 · embedding 测试夹具：session 级加载一次模型，避免重复下载与加载。"""
 
 import json
 from pathlib import Path
@@ -8,7 +8,7 @@ import pytest
 
 from app.infrastructure.embedding import LocalEmbedder
 
-DATA_DIR = Path(__file__).resolve().parent / "data" / "embedding"
+DATA_DIR = Path(__file__).resolve().parents[2] / "data" / "embedding"
 
 
 @pytest.fixture(scope="session")
