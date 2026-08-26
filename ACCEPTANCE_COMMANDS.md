@@ -12,3 +12,14 @@
 ```
 
 期望输出：`4 passed`。
+
+### M0-F2 · Milvus schema 对齐
+
+```powershell
+# 前置：Docker Desktop 已启动，Milvus 容器运行中
+docker compose up -d milvus
+# 在项目根目录执行
+.venv\Scripts\python.exe -m pytest tests/infrastructure/vectordb/test_milvus_client.py -v
+```
+
+期望输出：`3 passed`（伴随 PyMilvusDeprecationWarning，属预期，不影响验收）。
