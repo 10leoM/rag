@@ -357,3 +357,7 @@ class MilvusManager:
                 exc,
             )
             raise
+
+    def get_collection(self, name: str) -> Any:
+        """返回 pymilvus Collection 对象，供检索层直接调用 search。"""
+        return Collection(name, using=self._alias)

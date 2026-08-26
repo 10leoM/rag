@@ -40,8 +40,18 @@ class MilvusSearchable(Protocol):
 
 
 def _tokenize(text: str) -> list[str]:
-    """简单中英文分词：按非字母数字 Unicode 切分。"""
-    return [t.lower() for t in re.findall(r"[\w\u4e00-\u9fff]+", text) if t]
+    """中英文分词：中文按字符 bigram，英文与数字按单词。"""
+    tokens: list[str] = []
+    for match in re.finditer(r"[a-zA-Z0-9]+|[\u4e00-\u9fff]+", text):
+        word = match.group(0).lower()
+        if re.fullmatch(r"[\u4e00-\u9fff]+", word):
+            if len(word) == 1:
+                tokens.append(word)
+            else:
+                tokens.extend(word[i : i + 2] for i in range(len(word) - 1))
+        else:
+            tokens.append(word)
+    return tokens
 
 
 class _BM25Index:

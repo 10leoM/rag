@@ -34,3 +34,16 @@ docker compose up -d milvus postgres
 ```
 
 期望输出：`3 passed`（伴随 PyMilvusDeprecationWarning，属预期，不影响验收）。
+
+## M1 · RAG 核心链路
+
+### M1-F4 · 检索服务接线
+
+```powershell
+# 前置：Docker Desktop 已启动，Milvus 容器运行中
+docker compose up -d milvus
+# 在项目根目录执行
+.venv\Scripts\python.exe -m pytest tests/services/test_rag_service.py -v
+```
+
+期望输出：`1 passed`（伴随 PyMilvusDeprecationWarning，属预期，不影响验收）。
