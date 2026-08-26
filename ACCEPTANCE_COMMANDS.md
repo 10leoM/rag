@@ -23,3 +23,14 @@ docker compose up -d milvus
 ```
 
 期望输出：`3 passed`（伴随 PyMilvusDeprecationWarning，属预期，不影响验收）。
+
+### M0-F3 · 文档入库与生命周期
+
+```powershell
+# 前置：Docker Desktop 已启动，Milvus 与 Postgres 容器运行中
+docker compose up -d milvus postgres
+# 在项目根目录执行
+.venv\Scripts\python.exe -m pytest tests/services/test_document_service.py -v
+```
+
+期望输出：`3 passed`（伴随 PyMilvusDeprecationWarning，属预期，不影响验收）。

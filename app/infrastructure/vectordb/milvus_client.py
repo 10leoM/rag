@@ -318,6 +318,9 @@ class MilvusManager:
 
         def _delete() -> None:
             col = Collection(collection, using=self._alias)
+            # 1. 加载集合到内存（非主键字段过滤删除需要）
+            col.load()
+            # 2. 按表达式删除并落盘
             col.delete(expr)
             col.flush()
 
