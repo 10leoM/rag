@@ -87,6 +87,7 @@ class RAGService:
         mode: str = "hybrid",
         top_k: int = 10,
         rerank_top_k: int = 5,
+        include_trace: bool = False,
     ) -> RAGResponse:
         """检索 -> 重排 -> 生成，返回带引用的答案。"""
         if self._generator is None:
@@ -97,6 +98,12 @@ class RAGService:
         reranked = await self.rerank(query, results, top_k=rerank_top_k)
         # 3. 生成
         response = await self._generator.generate(query, reranked, chat_history=[])
+        # 4. 按需附带中间态
+        if include_trace:
+            response.trace = {
+                "retrieved": results,
+                "reranked": reranked,
+            }
         logger.info(
             "rag_service.py::answer 生成完成 answer_len={} citations={}",
             len(response.answer),

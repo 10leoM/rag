@@ -58,3 +58,12 @@ docker compose up -d milvus
 ```
 
 期望输出：`2 passed`（伴随 PyMilvusDeprecationWarning，属预期，不影响验收）。
+
+### M1-F6 · RAG 查询 API
+
+```powershell
+# 在项目根目录执行，测试用 Fake 服务注入，不依赖 OpenAI 与 Milvus
+.venv\Scripts\python.exe -m pytest tests/api/test_rag_api.py -v
+```
+
+期望输出：`2 passed`。

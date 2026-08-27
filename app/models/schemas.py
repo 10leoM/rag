@@ -113,3 +113,14 @@ class RAGResponse(BaseModel):
     citations: list[Citation] = Field(default_factory=list)
     raw_contexts: list[RetrievalResult] = Field(default_factory=list)
     model: str | None = None
+    trace: dict[str, Any] | None = None
+
+
+class RAGQueryRequest(BaseModel):
+    """RAG 查询请求。"""
+
+    query: str = Field(description="用户问题")
+    mode: str = Field(default="hybrid", description="检索模式：vector | keyword | hybrid")
+    top_k: int = Field(default=10, ge=1, description="检索返回数量")
+    rerank_top_k: int = Field(default=5, ge=1, description="重排后保留数量")
+    include_trace: bool = Field(default=False, description="是否返回检索/重排中间态")
